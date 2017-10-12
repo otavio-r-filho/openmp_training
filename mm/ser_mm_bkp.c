@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NRA 1600	      /* number of rows in matrix A */
-#define NCA 1600		/* number of columns in matrix A */
-#define NCB 1600 		/* number of columns in matrix B */
+#define NRA 4	      /* number of rows in matrix A */
+#define NCA 4		/* number of columns in matrix A */
+#define NCB 4 		/* number of columns in matrix B */
 
 int main(int argc, char *argv[])
 {
@@ -52,14 +52,14 @@ int main(int argc, char *argv[])
                   for(k=0;k<NCA;k++)
                         c[i][j]+= a[i][k] * b[k][j];
 
-      /*printf("Here is the result matrix:");
+      printf("Here is the result matrix:");
       for (i=0; i<NRA; i++) { 
       printf("\n"); 
             for (j=0; j<NCB; j++){
                   printf("%6.2f   ", c[i][j]);
                   printf(((j % 15) == 14) ? "\n" : "");
             }
-      }*/
+      }
       printf ("\nDone.\n");
 
       return 0;
