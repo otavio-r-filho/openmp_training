@@ -1,7 +1,7 @@
 #ifndef _HELP_FUNCS_H_
 #define _HELP_FUNCS_H_
 
-void print_matrix_arr(double *arr, int row, int col){
+void print_matrix_arr(const double *arr, const int row, const int col){
     int i, j;
 
     printf("Here is the result matrix:");
@@ -16,7 +16,7 @@ void print_matrix_arr(double *arr, int row, int col){
     printf("\n");
 }
 
-void print_matrix(double **arr, int row, int col){
+void print_matrix(const double **arr, const int row, const int col){
     int i, j;
     
         printf("Here is the result matrix:");
@@ -31,7 +31,7 @@ void print_matrix(double **arr, int row, int col){
         printf("\n");
 }
 
-int *get_matrix_dims(int argc, char **argv){
+int *get_matrix_dims(const int argc, const char **argv){
 
     int *dims = (int*) malloc(3 * sizeof(int));
 
@@ -59,7 +59,53 @@ int *get_matrix_dims(int argc, char **argv){
     return dims;
 }
 
-void dealoc_matrices(double **a, double **b, double **c, int NRA, int NCA, int NCB){
+void initialize_matrices(double **a, double **b, double **c, const int NRA, const int NCA, const int NCB){
+    
+    int i, j;
+
+    for (i=0; i<NRA; i++){
+        for (j=0; j<NCA; j++){
+                a[i][j]= i+j;
+        }
+    }
+
+    for (i=0; i<NCA; i++){
+        for (j=0; j<NCB; j++){
+                b[i][j]= i*j;
+        }
+    }
+
+    for(i=0;i<NRA;i++){
+        for(j=0;j<NCB;j++){
+                c[i][j] = 0.0;
+        }
+    }
+}
+
+void initialize_matrices_arr(double *a, double *b, double *c, const int NRA, const int NCA, const int NCB){
+    
+    int i, j;
+
+    for (i = 0; i < NRA; i++){
+        for (j = 0; j < NCA; j++){
+                a[i * NCA + j] = i + j;
+        }
+    }
+
+    for (i = 0; i < NCA; i++){
+        for (j = 0; j < NCB; j++){
+                b[i * NCB + j] = i * j;
+        }
+    }
+
+    for(i = 0; i < NRA; i++){
+        for(j = 0;j < NCB; j++){
+                c[i * NCB + j] = 0.0;
+        }
+    }
+}
+
+void dealoc_matrices(double **a, double **b, double **c, const int NRA, const int NCA, const int NCB){
 
     int i;
 
@@ -72,6 +118,12 @@ void dealoc_matrices(double **a, double **b, double **c, int NRA, int NCA, int N
         free(b[i]);
     }
 
+    free(a);
+    free(b);
+    free(c);
+}
+
+void dealoc_matrices_arr(double *a, double *b, double *c){
     free(a);
     free(b);
     free(c);
