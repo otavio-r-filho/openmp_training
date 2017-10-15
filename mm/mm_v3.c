@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 #include "help_funcs.h"
 
 int main(int argc, char *argv[])
@@ -27,6 +28,12 @@ int main(int argc, char *argv[])
         verb = (char*) malloc(sizeof(char));
         *verb = '0';
     }
+
+    if(par_mul == NULL){
+        par_mul = (char*) malloc(sizeof(char));
+        *par_mul = '0';
+    }
+
 
     NRA = get_matrix_dims((const int) argc, (const char**) argv)[0];   /* set matrix A number of rows */
     NCA = get_matrix_dims((const int) argc, (const char**) argv)[1];   /* set matrix A number of cols */
@@ -51,19 +58,37 @@ int main(int argc, char *argv[])
     initialize_matrices_arr(a_, b_, c_, (const int) NRA, (const int) NCA, (const int) NCB);
 
     /* Perform matrix multiply */
-    comp_start = clock();
-    printf("Performing serial matrix multiply ...\n");
-    for(i=0;i<NRA;i++){
-        for(j=0;j<NCB;j++){
-            junction = 0.0;
-            for(k=0;k<NCA;k++){
-                c[i][j] += a[i][k] * b[k][j];
+    comp_start = omp_get_wtime();
+    if(*par_mul == '1'){
+        #pragma omp parallel private(i,j,k,junction)
+        {
+        #pragma omp single
+        printf("Performing matrix parallel multiply with %d threads ...\n", omp_get_num_threads());
+        #pragma omp parallel for
+        for(i=0;i<NRA;i++){
+            for(j=0;j<NCB;j++){
+                junction = 0.0;
+                for(k=0;k<NCA;k++){
+                    junction += a[i][k] * b[k][j];
+                }
+                c[i][j] = junction;
+            }
+        }
+        } /* END OF PARALLEL SECTION */
+    } else{
+        printf("Performing serial matrix multiply ...\n");
+        for(i=0;i<NRA;i++){
+            for(j=0;j<NCB;j++){
+                junction = 0.0;
+                for(k=0;k<NCA;k++){
+                    c[i][j] += a[i][k] * b[k][j];
+                }
             }
         }
     }
-    comp_finish = clock();
+    comp_finish = omp_get_wtime();
 
-    printf("Total computation time %lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
+    printf("Total computation time %lfs\n", comp_finish - comp_start);
 
     if(verb[0] == '1'){
         print_matrix_arr(c_, NRA, NCB);

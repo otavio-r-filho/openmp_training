@@ -16,19 +16,19 @@ void print_matrix_arr(const double *arr, const int row, const int col){
     printf("\n");
 }
 
-void print_matrix(const double **arr, const int row, const int col){
+void print_matrix(double **arr, int row, int col){
     int i, j;
     
-        printf("Here is the result matrix:");
-    
-        for (i = 0; i < row; i++) { 
-        printf("\n"); 
-              for (j = 0; j < col; j++){
-                    printf("%6.2f   ", arr[i][j]);
-                    printf(((j % 15) == 14) ? "\n" : "");
-              }
-        }
-        printf("\n");
+    printf("Here is the result matrix [%d][%d]:", row, col);
+
+    for (i = 0; i < row; i++) { 
+    printf("\n"); 
+            for (j = 0; j < col; j++){
+                printf("%6.2f   ", arr[i][j]);
+                printf(((j % 15) == 14) ? "\n" : "");
+            }
+    }
+    printf("\n");
 }
 
 int *get_matrix_dims(const int argc, const char **argv){
@@ -127,6 +127,20 @@ void dealoc_matrices_arr(double *a, double *b, double *c){
     free(a);
     free(b);
     free(c);
+}
+
+double* transpose_matrix(double *arr, int nrow, int ncol) {
+    int i, j;
+
+    double *arrT = (double*) malloc(nrow * ncol * sizeof(double));
+
+    for(i = 0; i < nrow; i++) {
+        for(j = 0; j < ncol; j++) {
+            arrT[(j * nrow) + i] = arr[(i * ncol) + j];
+        }
+    }
+
+    return arrT;
 }
 
 #endif
