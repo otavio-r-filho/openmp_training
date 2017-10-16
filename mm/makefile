@@ -4,16 +4,19 @@ CFLAGS=-O3
 DFLAG=-g3
 OMPFLAG=-fopenmp -ftree-vectorize -mavx
 
-all: serial parallel
+all: v1 v2 v3 v4
 
-serial:
-	$(CC) $(CVER) $(CFLAGS) ser_mm.c -o ser_mm
+v1:
+	$(CC) $(CVER) $(CFLAGS) mm_v1.c -o mm_v1.out
 
-parallel:
-	$(CC) $(OMPFLAG) $(CVER) $(CFLAGS) par_mm.c -o par_mm
+v2:
+	$(CC) $(CVER) $(CFLAGS) mm_v2.c -o mm_v2.out
 
-par-debug:
-	$(CC) $(OMPFLAG) $(CVER) $(CFLAGS) $(DFLAG) par_mm.c -o par_mm
+v3:
+	$(CC) $(CVER) $(OMPFLAG) $(CFLAGS) mm_v3.c -o mm_v3.out
+
+v4:
+	$(CC) $(CVER) $(OMPFLAG) $(CFLAGS) mm_v4.c -o mm_v4.out
 
 clean:
-	rm ser_mm par_mm
+	rm *.out

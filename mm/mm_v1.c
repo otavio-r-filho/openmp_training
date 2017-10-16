@@ -67,14 +67,11 @@ int main(int argc, char *argv[])
     comp_finish = (double) clock();
     printf("Total computation time %lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
 
-    printf("Got here\n");
     if(verb[0] == '1'){
         print_matrix(c, NRA, NCB);
     }
-    printf("Got here 2\n");
 
     dealoc_matrices(a, b, c, (const int) NRA, (const int) NCA, (const int) NCB);
-    printf("Got here3\n");
 
     printf ("Done.\n");
 
