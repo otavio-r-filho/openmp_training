@@ -1,23 +1,16 @@
 CC = gcc
-CVER = -std=c99
-CFLAGS = -O3
+CFLAGS = -O3 -std=c99
 DFLAG = -Wall -g3
 OMPFLAGS = -fopenmp -mavx -ftree-vectorize
 LIBS=m
 
-all: serial parallel debug_serial debug_parallel
+all: ser par
 
-serial:
-	$(CC) $(CVER) $(CFLAGS) ser_wave.c -o ser_wave -l$(LIBS)
+ser:
+	$(CC) $(CVER) $(CFLAGS) ser_wave.c -o ser_wave.out -l$(LIBS)
 
-parallel:
-	$(CC) $(CFLAGS) $(OMPFLAGS) par_wave.c -o par_wave -l$(LIBS)
-
-debug_serial: 
-	$(CC) $(CVER) $(CFLAGS) $(DFLAG) ser_wave.c -o d-ser_wave -l$(LIBS)
-
-debug_parallel:
-	$(CC) $(CFLAGS) $(OMPFLAGS) $(DFLAG) par_wave.c -o d-par_wave -l$(LIBS)
+par:
+	$(CC) $(CFLAGS) $(OMPFLAGS) par_wave.c -o par_wave.out -l$(LIBS)
 
 clean:
-	rm *_wave
+	rm *.out

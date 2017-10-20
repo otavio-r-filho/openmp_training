@@ -16,8 +16,8 @@
 void srandom (unsigned seed);  
 double dboard (int darts);
 
-#define DARTS 10000   	/* number of throws at dartboard */
-#define ROUNDS 100    	/* number of times "darts" is iterated */
+#define DARTS 100000   	/* number of throws at dartboard */
+#define ROUNDS 1000    	/* number of times "darts" is iterated */
 
 int main(int argc, char *argv[])
 {
@@ -26,7 +26,7 @@ double avepi;       	/* average pi value for all iterations */
 int i, n;
 
 omp_set_dynamic(0);
-omp_set_num_threads(4);
+// omp_set_num_threads(4);
 
 printf("Starting serial version of pi calculation using dartboard algorithm...\n");
             /* seed the random number generator */
@@ -58,6 +58,8 @@ double dboard(int darts)
           r;             /* random number scaled between 0 and 1  */
    int score, n;            /* number of darts that hit circle */
    unsigned int cconst;  /* must be 4-bytes in size */
+   int r_seed;
+   time_t t;
 /*************************************************************************
  * The cconst variable must be 4 bytes. We check this and bail if it is
  * not the right size
@@ -79,23 +81,26 @@ double dboard(int darts)
  * specified number of darts, pi is calculated.  The computed value
  * of pi is returned as the value of this function, dboard.
  ************************************************************************/
- #pragma omp parallel private(r, y_coord, x_coord) firstprivate(cconst)
- srand(time)
-  #pragma omp parallel for private(r, y_coord, x_coord) firstprivate(cconst) reduction(+: score)
-  for (n = 1; n <= darts; n++) {
-    /* generate random numbers for x and y coordinates */
-    //r = (double)random()/MAX_RAND;
-    srandom
-    r = (double)rand_r(&r_seed)/RAND_MAX;
-    x_coord = (2.0 * r) - 1.0;
-    //r = (double)random()/MAX_RAND;
-    r = (double)rand_r(&r_seed)/RAND_MAX;
-    y_coord = (2.0 * r) - 1.0;
+    srand((unsigned) time(&t));
+    #pragma omp parallel private(r, y_coord, x_coord, r_seed)
+    {
+    r_seed = 72542 * 43*omp_get_thread_num();
+    #pragma omp for reduction(+: score)
+    for (n = 1; n <= darts; n++) {
+        /* generate random numbers for x and y coordinates */
+        //r = (double)random()/MAX_RAND;
+        r = (double)rand_r(&r_seed)/RAND_MAX;
+        x_coord = (2.0 * r) - 1.0;
+        //r = (double)random()/MAX_RAND;
+        r = (double)rand_r(&r_seed)/RAND_MAX;
+        y_coord = (2.0 * r) - 1.0;
 
-    /* if dart lands in circle, increment score */
-    if ((sqr(x_coord) + sqr(y_coord)) <= 1.0)
-        score++;
+        /* if dart lands in circle, increment score */
+        if ((sqr(x_coord) + sqr(y_coord)) <= 1.0)
+            score++;
     }
+    }
+
 
   /* calculate pi */
   pi = 4.0 * (double)score/(double)darts;

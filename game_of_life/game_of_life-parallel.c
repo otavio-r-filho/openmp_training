@@ -18,7 +18,7 @@ serial version
 
 int main(int argc, char *argv[]) {
   int i, j, n, im, ip, jm, jp, ni, nj, nsum, isum, seed;
-  int **old, **new;  
+  // int **old, **new; 
   float x;
 
   int num_procs = omp_get_num_procs();
