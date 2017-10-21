@@ -13,45 +13,46 @@
 
 int main(int argc, char *argv[])
 {
-int     i; 			/* loop variable */
-float *data; 	/* the intial array */
-data = malloc(sizeof(float)*ARRAYSIZE);
-int num_procs = omp_get_num_procs();
+    int     i; 			/* loop variable */
+    float *data; 	/* the intial array */
+    data = malloc(sizeof(float)*ARRAYSIZE);
 
-printf("Starting serial array example...\n");
-printf("Using array of %d floats. Requires %ld bytes\n",ARRAYSIZE,sizeof(float)*ARRAYSIZE);
+    #pragma omp parallel
+    {
 
-omp_set_num_threads(num_procs);
+        #pragma omp single
+        {
+            printf("Starting parallel array example with %d threads...\n", omp_get_num_threads());
+            printf("Using array of %d floats. Requires %ld bytes\n",ARRAYSIZE,sizeof(float)*ARRAYSIZE);
+        }
 
-#pragma omp parallel shared(data)
-{
+        /* Initialize the array */
+        #pragma omp single
+        printf("Initializing array...\n");
 
-/* Initialize the array */
-#pragma omp single\
-printf("Initializing array...\n");\
+        #pragma omp for nowait
+        for(i=0; i<ARRAYSIZE; i++) {
+            data[i] =  i * 1.0;
+        }
 
-#pragma omp for nowait
-for(i=0; i<ARRAYSIZE; i++) {
-  data[i] =  i * 1.0;
-}
+        /* Do a simple value assignment to each of the array elements */
+        #pragma omp single
+        printf("Performing computation on array elements...\n");
 
-/* Do a simple value assignment to each of the array elements */
-#pragma omp single
-printf("Performing computation on array elements...\n");
-#pragma omp for
-for(i=1; i < ARRAYSIZE; i++) {
-   data[i] = data[i] + i * 1.0;
-}
-   
-}
+        #pragma omp for
+        for(i=1; i < ARRAYSIZE; i++) {
+            data[i] = data[i] + i * 1.0;
+        }
 
-/* Print a few sample results */
-printf("Sample results\n");
-printf("   data[1]=%e\n",  data[1]);
-printf("   data[100]=%e\n",  data[100]);
-printf("   data[1000]=%e\n",  data[1000]);
-printf("   data[10000]=%e\n",  data[10000]);
-printf("   data[100000]=%e\n",  data[100000]);
-printf("   data[1000000]=%e\n",  data[1000000]);
-printf("\nAll Done!\n");
+    }
+
+    /* Print a few sample results */
+    printf("Sample results\n");
+    printf("   data[1]=%e\n",  data[1]);
+    printf("   data[100]=%e\n",  data[100]);
+    printf("   data[1000]=%e\n",  data[1000]);
+    printf("   data[10000]=%e\n",  data[10000]);
+    printf("   data[100000]=%e\n",  data[100000]);
+    printf("   data[1000000]=%e\n",  data[1000000]);
+    printf("\nAll Done!\n");
 }
