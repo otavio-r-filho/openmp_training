@@ -112,7 +112,8 @@ void update() {
    /* Update values for each time step */
    for (i = 1; i<= nsteps; i++) {
       /* Update points along line for this time step */
-      #pragma omp parallel for schedule(static, 3) ordered
+      // #pragma omp parallel for schedule(static, 3) ordered
+      #pragma omp parallel for private(j) ordered
       for (j = 1; j <= tpoints; j++) {
          /* global endpoints */
          if ((j == 1) || (j  == tpoints)) {
