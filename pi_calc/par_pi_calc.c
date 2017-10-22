@@ -81,7 +81,7 @@ double dboard(int darts)
  * specified number of darts, pi is calculated.  The computed value
  * of pi is returned as the value of this function, dboard.
  ************************************************************************/
-    srand((unsigned) time(&t));
+    srand((unsigned) time(NULL));
     #pragma omp parallel private(r, y_coord, x_coord, r_seed)
     {
     r_seed = 72542 * 43*omp_get_thread_num();

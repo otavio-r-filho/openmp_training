@@ -3,10 +3,10 @@
 **Codes properlly running**
 
 - [x] array
-- [] game_of_life
-- [] heat4d4order
+- [x] game_of_life
+- [x] heat4d4order
 - [] mm
-- [] pi_calc
-- [] prime
+- [x] pi_calc
+- [x] prime
 - [] wave
 

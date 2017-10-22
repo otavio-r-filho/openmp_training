@@ -4,7 +4,7 @@ DFLAG = -Wall -g3
 OMPFLAGS = -fopenmp -mavx -ftree-vectorize
 LIBS=m
 
-all: serial parallel debug_serial debug_parallel
+all: ser par
 
 ser:
 	$(CC) $(CVER) $(CFLAGS) ser_prime.c -o ser_prime.out -l$(LIBS)
