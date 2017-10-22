@@ -1,16 +1,27 @@
-CC = gcc
-CFLAGS = -O3 -std=c99
-DFLAG = -Wall -g3
-OMPFLAGS = -fopenmp -mavx -ftree-vectorize
+GCC=gcc
+GCFLAGS=-O3 -std=c99
+GOMPFLAGS=-fopenmp -ftree-vectorize -mavx
+
+ICC=icc
+ICFLAGS=-O3 -std=c99  -mmic
+IOMPFLAGS=-qopenmp -vec
 LIBS=m
 
 all: ser par
 
 ser:
-	$(CC) $(CVER) $(CFLAGS) ser_prime.c -o ser_prime.out -l$(LIBS)
+	$(ICC) $(ICFLAGS) ser_prime.c -o ser_prime.out -l$(LIBS)
 
 par:
-	$(CC) $(CFLAGS) $(OMPFLAGS) par_prime.c -o par_prime.out -l$(LIBS)
+	$(ICC) $(ICFLAGS) $(IOMPFLAGS) par_prime.c -o par_prime.out -l$(LIBS)
+
+gall: gser gpar
+
+gser:
+	$(GCC) $(GCFLAGS) ser_prime.c -o ser_prime.out -l$(LIBS)
+
+gpar:
+	$(GCC) $(GCFLAGS) $(GOMPFLAGS) par_prime.c -o par_prime.out -l$(LIBS)
 
 clean:
 	rm *.out

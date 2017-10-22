@@ -1,14 +1,26 @@
-CC=gcc -std=c99
-CFLAGS=-O3 -std=c99
-OMPFLAGS=-fopenmp -ftree-vectorize -mavx
+GCC=gcc
+GCFLAGS=-O3 -std=c99
+GOMPFLAGS=-fopenmp -ftree-vectorize -mavx
+
+ICC=icc
+ICFLAGS=-O3 -std=c99 -mmic
+IOMPFLAGS=-qopenmp -vec
 
 all: ser par
 
 ser:
-	$(CC) $(CFLAGS) ser-game_of_life.c -o ser-game_of_life.out
+	$(ICC) $(ICFLAGS) ser-game_of_life.c -o ser-game_of_life.out
 
 par:
-	$(CC) $(CFLAGS) $(OMPFLAGS) par-game_of_life.c -o par-game_of_life.out
+	$(ICC) $(ICFLAGS) $(IOMPFLAGS) par-game_of_life.c -o par-game_of_life.out
+
+gall: gser gpar
+
+gser:
+	$(GCC) $(GCFLAGS) ser-game_of_life.c -o ser-game_of_life.out
+
+gpar:
+	$(GCC) $(GCFLAGS) $(GOMPFLAGS) par-game_of_life.c -o par-game_of_life.out
 
 clean: 
 	rm *.out

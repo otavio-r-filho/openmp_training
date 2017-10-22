@@ -1,22 +1,26 @@
-CC=gcc
-CVER=-std=c99
-CFLAGS=-O3
-DFLAG=-g3
-OMPFLAG=-fopenmp -ftree-vectorize -mavx
+GCC=gcc
+GCFLAGS=-O3 -std=c99
+GOMPFLAGS=-fopenmp -ftree-vectorize -mavx
 
-all: v1 v2 v3 v4
+ICC=icc
+ICFLAGS=-O3 -std=c99  -mmic
+IOMPFLAGS=-qopenmp -vec
 
-v1:
-	$(CC) $(CVER) $(CFLAGS) mm_v1.c -o mm_v1.out
+all: ser par
 
-v2:
-	$(CC) $(CVER) $(CFLAGS) mm_v2.c -o mm_v2.out
+ser:
+	$(ICC) $(ICFLAGS) mm_v1.c -o mm_v1.out
 
-v3:
-	$(CC) $(CVER) $(OMPFLAG) $(CFLAGS) mm_v3.c -o mm_v3.out
+par:
+	$(ICC) $(ICFLAGS) $(IOMPFLAGS) mm_v4.c -o mm_v4.out
 
-v4:
-	$(CC) $(CVER) $(OMPFLAG) $(CFLAGS) mm_v4.c -o mm_v4.out
+gall: gser gpar
+
+gser:
+	$(GCC) $(GCFLAGS) mm_v1.c -o mm_v1.out
+
+gpar:
+	$(GCC) $(GCFLAGS) $(GOMPFLAGS) mm_v4.c -o mm_v4.out
 
 clean:
 	rm *.out

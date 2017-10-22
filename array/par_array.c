@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     int     i; 			/* loop variable */
     float *data; 	/* the intial array */
     data = malloc(sizeof(float)*ARRAYSIZE);
+    double s_time, f_time;
 
     #pragma omp parallel
     {
@@ -39,10 +40,15 @@ int main(int argc, char *argv[])
         #pragma omp single
         printf("Performing computation on array elements...\n");
 
+        #pragma omp single
+        s_time = omp_get_wtime();
+
         #pragma omp for
         for(i=1; i < ARRAYSIZE; i++) {
             data[i] = data[i] + i * 1.0;
         }
+        #pragma omp single
+        f_time = omp_get_wtime();
 
     }
 
@@ -54,5 +60,6 @@ int main(int argc, char *argv[])
     printf("   data[10000]=%e\n",  data[10000]);
     printf("   data[100000]=%e\n",  data[100000]);
     printf("   data[1000000]=%e\n",  data[1000000]);
+    printf("Total computation time: %lfs\n", f_time - s_time);
     printf("\nAll Done!\n");
 }

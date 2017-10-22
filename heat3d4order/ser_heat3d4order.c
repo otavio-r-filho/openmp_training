@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 
 #define C0 0.5
 #define C1 0.75
@@ -17,117 +18,134 @@ struct timeval inicio, final;
 
 int main(int argc, char* argv[]){
 
- int niter,dim,save;
- int t,i,j,k,t0,t1, rc;
- float *heat_, tf_sec;
+	int niter,dim,save;
+	int t,i,j,k,t0,t1, rc;
+	float *heat_, tf_sec;
+	double s_time, f_time;
 
- //executei /a.out 2 16 2
- if(argc < 4){
-        printf("Error! informe o número de iterações e o tamanho da matriz. i.e: ./executavel 1000 500 500\n");
-	exit(1);
- }
- niter = atoi(argv[1]);
- dim = atoi(argv[2]);
- save = atoi(argv[3]);
- 
- #ifdef VERBOSE
- printf("Número de iterações %d\ndimensão %d salvo a cada %d timesteps\n",niter,dim,save);
- #endif
+	//executei /a.out 2 16 2
+	if(argc < 4){
+		printf("Error! Please inform number of iterations and matrix size. i.e: ./h3d4o.out 1000 500 500\n");
+		exit(1);
+	}
+	niter = atoi(argv[1]);
+	dim = atoi(argv[2]);
+	save = atoi(argv[3]);
 
- heat_ = (float*) malloc(sizeof(float)*2*dim*dim*dim);
+	#ifdef VERBOSE
+	printf("Number of iterations %d\ndimension %d saved each %d timesteps\n",niter,dim,save);
+	#endif
 
- if(heat_ == NULL){
-        printf("Error! Malloc fail\n");
-        exit(1);
- }
+	heat_ = (float*) malloc(sizeof(float)*2*dim*dim*dim);
 
- float (*heat)[dim][dim][dim] = (float (*)[dim][dim][dim]) heat_;
+	if(heat_ == NULL){
+		printf("Error! Malloc fail\n");
+		exit(1);
+	}
 
- #ifdef VERBOSE
- printf("Inicializando matriz!\n");
- #endif
+	float (*heat)[dim][dim][dim] = (float (*)[dim][dim][dim]) heat_;
 
- for(i=0;i<dim;i++){
-   for(j=0;j<dim;j++){
-     for(k=0;k<dim;k++){
-	      heat[1][i][j][k] = heat[0][i][j][k] = 1;
-     }
-   }
- }
+	#ifdef VERBOSE
+	printf("Initializing matrix!\n");
+	#endif
 
- #ifdef VERBOSE
- printf("Iniciando computação do stencil!\n");
- #endif
+	for(i=0;i<dim;i++){
+		for(j=0;j<dim;j++){
+			for(k=0;k<dim;k++){
+				heat[1][i][j][k] = heat[0][i][j][k] = 1;
+			}
+		}
+	}
 
- get_time(INICIO);
- for(t=1; t<niter+1; t++){
-        t0 = (t % 2);
-        t1 = (t0 + 1)%(2);
-        for(i=4;i<dim-4;i++){
-          for(j=4;j<dim-4;j++){
-            for(k=4;k<dim-4;k++){
-                heat[t0][i][j][k] = C0 * heat[t1][i][j][k] + C1 * (heat[t1][i+1][j][k] + heat[t1][i-1][j][k] + heat[t1][i][j+1][k] + heat[t1][i][j-1][k] + heat[t1][i][j][k+1] + heat[t1][i][j][k-1])
-							   + C2 * (heat[t1][i+2][j][k] + heat[t1][i-2][j][k] + heat[t1][i][j+2][k] + heat[t1][i][j-2][k] + heat[t1][i][j][k+2] + heat[t1][i][j][k-2])
-							   + C3 * (heat[t1][i+3][j][k] + heat[t1][i-3][j][k] + heat[t1][i][j+3][k] + heat[t1][i][j-3][k] + heat[t1][i][j][k+3] + heat[t1][i][j][k-3])
-							   + C4 * (heat[t1][i+4][j][k] + heat[t1][i-4][j][k] + heat[t1][i][j+4][k] + heat[t1][i][j-4][k] + heat[t1][i][j][k+4] + heat[t1][i][j][k-4]);
-            }
-          }
-        }
- }
- tf_sec = get_time(FIM);
- printf("Time elapsed: %.1f seg\n",tf_sec);
+	#ifdef VERBOSE
+	printf("Performing matrix computation!\n");
+	#endif
 
-    rc = write_output(heat_, dim, t0);
-    if(!rc){
-      printf("Matriz salva no arquivo output_ser.txt com sucesso!\n");  
-    }
-    
- free(heat_);
+	// get_time(INICIO);
+	s_time = (double) clock();
+	for(t=1; t<niter+1; t++){
+		t0 = (t % 2);
+		t1 = (t0 + 1)%(2);
+		for(i=4;i<dim-4;i++){
+			for(j=4;j<dim-4;j++){
+				for(k=4;k<dim-4;k++){
+					heat[t0][i][j][k] = C0 * heat[t1][i][j][k] +
+										C1 * (heat[t1][i+1][j][k] + heat[t1][i-1][j][k] +
+											  heat[t1][i][j+1][k] + heat[t1][i][j-1][k] +
+											  heat[t1][i][j][k+1] + heat[t1][i][j][k-1])+
 
- return 0;
+										C2 * (heat[t1][i+2][j][k] + heat[t1][i-2][j][k] +
+											  heat[t1][i][j+2][k] + heat[t1][i][j-2][k] +
+											  heat[t1][i][j][k+2] + heat[t1][i][j][k-2])+
+										
+										C3 * (heat[t1][i+3][j][k] + heat[t1][i-3][j][k] +
+											  heat[t1][i][j+3][k] + heat[t1][i][j-3][k] +
+											  heat[t1][i][j][k+3] + heat[t1][i][j][k-3])+
+										
+										C4 * (heat[t1][i+4][j][k] + heat[t1][i-4][j][k] +
+											  heat[t1][i][j+4][k] + heat[t1][i][j-4][k] +
+											  heat[t1][i][j][k+4] + heat[t1][i][j][k-4]);
+				}
+			}
+		}
+	}
+	// tf_sec = get_time(FIM);
+	f_time = (double) clock();
+	// printf("Time elapsed: %.1f seg\n",tf_sec);
+	printf("Total computation time: %.2lfs\n", (f_time - s_time)/CLOCKS_PER_SEC);
+
+	rc = write_output(heat_, dim, t0);
+	if(!rc){
+		printf("Matriz salva no arquivo output_ser.txt com sucesso!\n");  
+	}
+
+	free(heat_);
+
+	return 0;
 }
  
 float get_time(int mode){
  
- float tf_sec = 0.0;
+	float tf_sec = 0.0;
 
- if(mode == INICIO){
- 	gettimeofday(&inicio, NULL);
- }
- else{
- 	gettimeofday(&final, NULL);
- 	unsigned long long seg = 1000 * (final.tv_sec - inicio.tv_sec) + (final.tv_usec - inicio.tv_usec) / 1000;
- 	tf_sec = ((float)seg)*1e-3;
- }
- return tf_sec;
+	if(mode == INICIO){
+		gettimeofday(&inicio, NULL);
+	}
+	else{
+		gettimeofday(&final, NULL);
+		unsigned long long seg = 1000 * (final.tv_sec - inicio.tv_sec) + (final.tv_usec - inicio.tv_usec) / 1000;
+		tf_sec = ((float)seg)*1e-3;
+	}
+	return tf_sec;
 }
 
 int write_output(float *heat_, int dim, int timestep){
  
- FILE *fff;
- int i,j,k;
- float (*heat)[dim][dim][dim] = (float (*)[dim][dim][dim]) heat_;
- 
- fff = fopen("output_ser.txt","w");
- if (fff==NULL){
-   printf("Error! Não foi possível abrir o arquivo para saída.\n");
-   return 1;
- }
+	FILE *fff;
+	int i,j,k;
+	float (*heat)[dim][dim][dim] = (float (*)[dim][dim][dim]) heat_;
 
- for(i=0;i<dim;i++){
-   for(j=0;j<dim;j++){
-     for(k=0;k<dim;k++){
-	     fprintf(fff,"%.1f ",heat[timestep][i][j][k]);
-       if((k % dim) == (dim - 1)){
-            fprintf(fff, "\n");
-            fprintf(fff, ((j % dim) != (dim - 1)) ? "" : "\n\n");
-        }       
-     }
-     //fprintf(fff, "\n");
-   }
-     //fprintf(fff, "\n\n");
- }
- fclose(fff);
- 
- return 0;
+	fff = fopen("output_ser.txt","w");
+	if (fff==NULL){
+		printf("Error! Não foi possível abrir o arquivo para saída.\n");
+		return 1;
+	}
+
+	for(i=0;i<dim;i++){
+		for(j=0;j<dim;j++){
+			for(k=0;k<dim;k++){
+				fprintf(fff,"%.1f ",heat[timestep][i][j][k]);
+				if((k % dim) == (dim - 1)){
+					fprintf(fff, "\n");
+					fprintf(fff, ((j % dim) != (dim - 1)) ? "" : "\n\n");
+				}       
+			}
+			//fprintf(fff, "\n");
+		}
+		//fprintf(fff, "\n\n");
+	}
+
+	fclose(fff);
+
+	return 0;
 }

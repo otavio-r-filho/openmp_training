@@ -17,18 +17,15 @@ float get_time(int);
 struct timeval inicio, final;
 
 int main(int argc, char* argv[]){
- 
-	int num_procs = omp_get_num_procs();
-	omp_set_dynamic(0);
-	omp_set_num_threads(8);
 
 	int niter,dim,save;
 	int t,i,j,k,t0,t1, rc;
 	float *heat_, tf_sec;
+	double s_time, f_time;
 
 	//executei /a.out 2 16 2
 	if(argc < 4){
-		printf("Error! informe o número de iterações e o tamanho da matriz. i.e: ./executavel 1000 500 500\n");
+		printf("Error! Please inform number of iterations and matrix size. i.e: ./h3d4o.out 1000 500 500\n");
 		exit(1);
 	}
 	niter = atoi(argv[1]);
@@ -36,7 +33,7 @@ int main(int argc, char* argv[]){
 	save = atoi(argv[3]);
  
 	#ifdef VERBOSE
-	printf("Número de iterações %d\ndimensão %d salvo a cada %d timesteps\n",niter,dim,save);
+	printf("Number of iterations %d\ndimension %d saved each %d timesteps\n",niter,dim,save);
 	#endif
 
  	heat_ = (float*) malloc(sizeof(float)*2*dim*dim*dim);
@@ -50,7 +47,7 @@ int main(int argc, char* argv[]){
 	// double (*a)[NRA][NCA] = (double (*)[NRA][NCA]) a_;
 
 	#ifdef VERBOSE
-	printf("Inicializando matriz!\n");
+	printf("Initializing matrix!\n");
 	#endif
 
 	/* Inicializando matriz com todas as celulas iguais a 1*/
@@ -64,10 +61,11 @@ int main(int argc, char* argv[]){
 	}
 
 	#ifdef VERBOSE
-	printf("Iniciando computação do stencil!\n");
+	printf("Performing matrix computation!\n");
 	#endif
 
-	get_time(INICIO);
+	// get_time(INICIO);
+	s_time = omp_get_wtime();
 	for(t=1; t<niter+1; t++){
 		t0 = (t % 2);
 		t1 = (t0 + 1)%(2);
@@ -96,12 +94,14 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
-	tf_sec = get_time(FIM);
-	printf("Time elapsed: %.1f seg\n",tf_sec);
+	// tf_sec = get_time(FIM);
+	f_time = omp_get_wtime();
+	// printf("Total computation time: %.1f seg\n",tf_sec);
+	printf("Total computation time: %.2lfs\n", f_time - s_time);
 
 	rc = write_output(heat_, dim, t0);
 	if(!rc){
-		printf("Matriz salva no arquivo output_par.txt com sucesso!\n");  
+		printf("Matrix successfully saved in file: output_par.txt.\n");  
 	}
     
 	free(heat_);
@@ -132,7 +132,7 @@ int write_output(float *heat_, int dim, int timestep){
 
 	fff = fopen("output_par.txt","w");
 	if (fff==NULL){
-		printf("Error! Não foi possível abrir o arquivo para saída.\n");
+		printf("Error! It was not possible to open output file.\n");
 		return 1;
 	}
 

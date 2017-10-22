@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         }
     }
     comp_finish = (double) clock();
-    printf("Total computation time %lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
+    printf("Total computation time: %.2lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
 
     if(verb[0] == '1'){
         print_matrix(c, NRA, NCB);

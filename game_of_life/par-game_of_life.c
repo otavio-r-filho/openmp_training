@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
 	int i, j, n, im, ip, jm, jp, ni, nj, nsum, isum, seed;
 	int *old, *new;  
 	float x;
+	double s_time, f_time;
 
 	/* allocate arrays */
 
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]) {
 	new = (int*) malloc(ni*nj*sizeof(int));
 
 	/*  initialize elements of old to 0 or 1 */
-
+	s_time = omp_get_wtime();
 	#pragma omp parallel for private(i, j, x, seed) collapse(2)
 	for(i=1; i<=NI; i++){
 		for(j=1; j<=NJ; j++){
@@ -113,11 +114,14 @@ int main(int argc, char *argv[]) {
 			isum += new[(i*nj)+j];
 		}
 	}
+	f_time = omp_get_wtime();
 
 	free(old);
 	free(new);
 
 	printf("\nNumber of live cells = %d\n", isum);
+
+	printf("\nTotal computation time: %.2lfs\n", f_time - s_time);
 
 	return 0;
 }

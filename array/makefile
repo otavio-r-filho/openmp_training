@@ -1,16 +1,26 @@
-CC=gcc
-CVER=-std=c99
-CFLAGS=-O3
-DFLAG=-g3
-OMPFLAGS=-fopenmp -ftree-vectorize -mavx
+GCC=gcc
+GCFLAGS=-O3 -std=c99
+GOMPFLAGS=-fopenmp -ftree-vectorize -mavx
+
+ICC=icc
+ICFLAGS=-O3 -std=c99  -mmic
+IOMPFLAGS=-qopenmp -vec
 
 all: ser par
 
 ser:
-	$(CC) $(CVER) $(CFLAGS) ser_array.c -o ser_array.out
+	$(ICC) $(ICFLAGS) ser_array.c -o ser_array.out
 
 par:
-	$(CC) $(CVER) $(CFLAGS) $(OMPFLAGS) par_array.c -o par_array.out
+	$(ICC) $(ICFLAGS) $(IOMPFLAGS) par_array.c -o par_array.out
+
+gall: gser gpar
+
+gser:
+	$(GCC) $(GCFLAGS) ser_array.c -o ser_array.out
+
+gpar:
+	$(GCC) $(GCFLAGS) $(GOMPFLAGS) par_array.c -o par_array.out
 
 clean:
 	rm *.out

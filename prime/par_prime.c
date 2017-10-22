@@ -34,40 +34,45 @@ else
 }
 
 
-int main(int argc, char *argv[])
-{
-int n,                           /* loop variables */
-    pc,                          /* prime counter */
-    foundone = 0;                    /* most recent prime found */
+int main(int argc, char *argv[]){
+    int n,                           /* loop variables */
+        pc,                          /* prime counter */
+        foundone = 0;                    /* most recent prime found */
+    double s_time, f_time;
 
-printf("Starting. Numbers to be scanned= %d\n",LIMIT);
+    printf("Starting parallel with %d threads... Numbers to be scanned= %d\n", omp_get_max_threads(), LIMIT);
 
-pc=4;     /* Assume the primes less than 10 (2,3,5,7) are counted here */
+    pc=4;     /* Assume the primes less than 10 (2,3,5,7) are counted here */
 
-int num_data = (int) ((LIMIT / PRINT) - 1);
-int *prime_data = (int*) malloc(num_data * sizeof(int));
+    int num_data = (int) ((LIMIT / PRINT) - 1);
+    int *prime_data = (int*) malloc(num_data * sizeof(int));
 
-omp_set_num_threads(omp_get_num_procs());
+    s_time = omp_get_wtime();
+    #pragma omp parallel for schedule(static, 1) reduction(max: foundone)
+    for (n=11; n<=LIMIT; n=n+2) {
+        if (isprime(n)) {
+            #pragma omp atomic update
+            pc++;
 
-#pragma omp parallel for schedule(static, 1) reduction(max: foundone)
-for (n=11; n<=LIMIT; n=n+2) {
-   if (isprime(n)) {
-      #pragma omp atomic update
-      pc++;
+            foundone = n;
+            /***** Optional: print each prime as it is found 
+             printf("%d\n",foundone);
+            *****/
+        }
+                    
+        if ( (n-1)%PRINT == 0 )
+            #pragma omp atomic read
+            prime_data[((n - 1) / PRINT) - 1] = pc;
+            //printf("Numbers scanned= %d   Primes found= %d\n",n-1,pc);
+    }
+    f_time = omp_get_wtime();
 
-      foundone = n;
-      /***** Optional: print each prime as it is found 
-      printf("%d\n",foundone);
-      *****/
-      }			
-   if ( (n-1)%PRINT == 0 )
-       #pragma omp atomic read
-       prime_data[((n - 1) / PRINT) - 1] = pc;
-       //printf("Numbers scanned= %d   Primes found= %d\n",n-1,pc);
-   }
+    for(n = 1; n < (LIMIT / PRINT); n++){
+        printf("Numbers scanned= %d   Primes found= %d\n",n * PRINT, prime_data[n-1]);
+    }
 
-   for(n = 1; n < (LIMIT / PRINT); n++){
-       printf("Numbers scanned= %d   Primes found= %d\n",n * PRINT, prime_data[n-1]);
-   }
-printf("Done. Largest prime is %d Total primes %d\n",foundone,pc);
+    printf("Done. Largest prime is %d Total primes %d\n",foundone,pc);
+    printf("Total computation time: %.2lfs\n", f_time - s_time);
+
+    return 0;
 } 
