@@ -4,3 +4,4 @@ chmod 775 heat3d4order/run.sh
 chmod 775 mm/run.sh
 chmod 775 pi_calc/run.sh
 chmod 775 prime/run.sh
+chmod 775 simple_print/run.sh
