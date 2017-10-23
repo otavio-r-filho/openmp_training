@@ -10,6 +10,8 @@ serial version
 #include <stdlib.h>
 #include <time.h>
 
+int rand_r(unsigned int*);
+
 #define NI 2000      /* array sizes */
 
 #define NJ 2000
