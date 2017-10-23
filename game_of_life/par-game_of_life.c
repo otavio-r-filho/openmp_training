@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	old = (int*) malloc(ni*nj*sizeof(int));
 	new = (int*) malloc(ni*nj*sizeof(int));
 
-	printf("Initiating parallel computation with %d threads\n", omp_get_max_threads());
+	printf("Initiating parallel computation with %d threads...\n", omp_get_max_threads());
 
 	/*  initialize elements of old to 0 or 1 */
 	s_time = omp_get_wtime();
