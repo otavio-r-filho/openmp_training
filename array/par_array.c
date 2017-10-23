@@ -60,6 +60,6 @@ int main(int argc, char *argv[])
     printf("   data[10000]=%e\n",  data[10000]);
     printf("   data[100000]=%e\n",  data[100000]);
     printf("   data[1000000]=%e\n",  data[1000000]);
-    printf("Total computation time: %.2lfs\n", f_time - s_time);
+    printf("Total computation time: %.4lfs\n", f_time - s_time);
     printf("\nAll Done!\n");
 }

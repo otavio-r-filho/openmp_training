@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         b[i] = (double*) malloc(NCB * sizeof(double));
     }
 
-    printf("Starting serial matrix multiple example...\n");
+    printf("Starting serial matrix multiplication...\n");
     printf("Using matrix sizes a[%d][%d], b[%d][%d], c[%d][%d]\n",
            NRA,NCA,NCA,NCB,NRA,NCB);
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         }
     }
     comp_finish = (double) clock();
-    printf("Total computation time: %.2lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
+    printf("Total computation time: %.4lfs\n", (comp_finish - comp_start) / CLOCKS_PER_SEC);
 
     if(verb[0] == '1'){
         print_matrix(c, NRA, NCB);

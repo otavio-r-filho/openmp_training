@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
         foundone = 0;                    /* most recent prime found */
     double s_time, f_time;
 
-    printf("Starting parallel with %d threads... Numbers to be scanned= %d\n", omp_get_max_threads(), LIMIT);
+    printf("Starting parallel prime detection with %d threads... Numbers to be scanned= %d\n", omp_get_max_threads(), LIMIT);
 
     pc=4;     /* Assume the primes less than 10 (2,3,5,7) are counted here */
 

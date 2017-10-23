@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 	}
 	f_time = omp_get_wtime();
 	printf("\nReal value of PI: 3.1415926535897 \n");
-	printf("Total computation time: %.2lfs\n", f_time - s_time);
+	printf("Total computation time: %.4lfs\n", f_time - s_time);
 
 	return 0;
 }

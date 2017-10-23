@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 	}
 
 	#ifdef VERBOSE
-	printf("Performing matrix computation!\n");
+	printf("Performing parallel matrix computation with %d threads!\n", omp_get_max_threads());
 	#endif
 
 	// get_time(INICIO);
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
 	// tf_sec = get_time(FIM);
 	f_time = omp_get_wtime();
 	// printf("Total computation time: %.1f seg\n",tf_sec);
-	printf("Total computation time: %.2lfs\n", f_time - s_time);
+	printf("Total computation time: %.4lfs\n", f_time - s_time);
 
 	rc = write_output(heat_, dim, t0);
 	if(!rc){

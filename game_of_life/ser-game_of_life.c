@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
 		new[i] = malloc(nj*sizeof(int));
 	}
 
+	printf("Initiating serial computation...\n");
+
 	/*  initialize elements of old to 0 or 1 */
 	s_time = (double) clock();
 	for(i=1; i<=NI; i++){
@@ -129,7 +131,7 @@ int main(int argc, char *argv[]) {
 
 	printf("\nNumber of live cells = %d\n", isum);
 
-	printf("\nTotal computation time: %.2lfs\n", (f_time - s_time)/CLOCKS_PER_SEC);
+	printf("\nTotal computation time: %.4lfs\n", (f_time - s_time)/CLOCKS_PER_SEC);
 
 	return 0;
 }

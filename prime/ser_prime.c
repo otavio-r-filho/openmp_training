@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 		foundone;                    /* most recent prime found */
 	double s_time, f_time;
 
-	printf("Starting serial...\nNumbers to be scanned= %d\n",LIMIT);
+	printf("Starting serial prime detection...\nNumbers to be scanned= %d\n",LIMIT);
 
 	pc=4;     /* Assume the primes less than 10 (2,3,5,7) are counted here */
 

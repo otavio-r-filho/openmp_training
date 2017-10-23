@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
     double *bT; /* Will holde the transpose of matrix b */
 
-    printf("Starting parallel matrix multiple example with %d threads...\n", omp_get_max_threads());
+    printf("Starting parallel matrix multiplication with %d threads...\n", omp_get_max_threads());
     printf("Using matrix sizes a[%d][%d], b[%d][%d], c[%d][%d]\n",
         NRA,NCA,NCA,NCB,NRA,NCB);
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     }
     comp_finish = omp_get_wtime();
 
-    printf("Total computation time: %.2lfs\n", comp_finish - comp_start);
+    printf("Total computation time: %.4lfs\n", comp_finish - comp_start);
 
     if(verb[0] == '1'){
         print_matrix_arr(c_, NRA, NCB);

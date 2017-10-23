@@ -32,6 +32,8 @@ int main(int argc, char *argv[]) {
 	old = (int*) malloc(ni*nj*sizeof(int));
 	new = (int*) malloc(ni*nj*sizeof(int));
 
+	printf("Initiating parallel computation with %d threads\n", omp_get_max_threads());
+
 	/*  initialize elements of old to 0 or 1 */
 	s_time = omp_get_wtime();
 	#pragma omp parallel for private(i, j, x, seed) collapse(2)
@@ -123,7 +125,7 @@ int main(int argc, char *argv[]) {
 
 	printf("\nNumber of live cells = %d\n", isum);
 
-	printf("\nTotal computation time: %.2lfs\n", f_time - s_time);
+	printf("\nTotal computation time: %.4lfs\n", f_time - s_time);
 
 	return 0;
 }
