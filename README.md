@@ -5,8 +5,8 @@
 - [x] array
 - [x] game_of_life
 - [x] heat4d4order
-- [] mm
+- [ ] mm
 - [x] pi_calc
 - [x] prime
-- [] wave
+- [ ] wave
 
